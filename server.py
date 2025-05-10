@@ -24,7 +24,7 @@ def process(request: Request, user_input: str = Form(...), question: str = Form(
     output = ""
 
     if action == "summarize":
-        url = "https://6b42-35-199-183-149.ngrok-free.app/summarize"
+        url = "https://abb1-35-197-132-141.ngrok-free.app/summarize"
         data = {"text": transcript}
         try:
             response = requests.post(url, json=data)
