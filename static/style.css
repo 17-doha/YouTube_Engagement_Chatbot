@@ -68,6 +68,7 @@ header {
     flex-direction: column;
     gap: 10px;
     background-color: #f7f7f7;
+    height: 400px;
 }
 
 /* Individual messages */

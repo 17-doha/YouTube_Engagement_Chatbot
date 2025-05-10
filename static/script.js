@@ -1,4 +1,5 @@
 let selectedAction = 'summarize'; // Default action
+let loadingInterval = null;
 
 // Function to set the selected action based on the button clicked
 function setAction(action) {
@@ -28,6 +29,12 @@ function sendMessage() {
     appendMessage("user", text);
     input.value = "";
 
+    // Append waiting message with dots
+    const waitingMsg = appendMessage("bot", `Waiting for ${selectedAction}<span id="dots">.</span>`);
+
+    // Start loading dots animation
+    startLoadingDots();
+
     // Send user input to the FastAPI server using a POST request
     fetch('/process', {
         method: 'POST',
@@ -41,23 +48,37 @@ function sendMessage() {
     })
     .then(response => response.text())
     .then(data => {
-        // Append the actual response from the server
-        appendMessage("bot", data);
+        stopLoadingDots();
+        waitingMsg.innerHTML = data; // Replace waiting message with response
     })
     .catch(error => {
         console.error('Error:', error);
-        appendMessage("bot", "Sorry, there was an error processing your request.");
+        stopLoadingDots();
+        waitingMsg.innerHTML = "Sorry, there was an error processing your request.";
     });
 }
 
 function appendMessage(sender, text) {
     const message = document.createElement("div");
     message.className = `chat-message ${sender}`;
-    message.innerText = text;
-
+    message.innerHTML = text;  // Changed to innerHTML to allow <span> dots
     const chatBox = document.getElementById("chat-box");
     chatBox.appendChild(message);
     chatBox.scrollTop = chatBox.scrollHeight;
+    return message; // Return the message div (so we can later update it)
+}
+
+function startLoadingDots() {
+    let dots = document.getElementById('dots');
+    let count = 1;
+    loadingInterval = setInterval(() => {
+        count = (count % 3) + 1;
+        dots.textContent = '.'.repeat(count);
+    }, 500);
+}
+
+function stopLoadingDots() {
+    clearInterval(loadingInterval);
 }
 
 // Update the active button style when the page loads
