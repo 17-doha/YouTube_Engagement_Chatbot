@@ -12,7 +12,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # vLLM endpoint configuration
 vllm_model_id = "data-lora"
-ngrok_url = "https://b458-34-90-55-87.ngrok-free.app"
+ngrok_url = "https://0d44-34-16-144-68.ngrok-free.app"
 
 @app.get("/", response_class=HTMLResponse)
 def get_home(request: Request):
