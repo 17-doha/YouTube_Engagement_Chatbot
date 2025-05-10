@@ -1,0 +1,9 @@
+youtube_transcript_api
+openai-whisper
+google-api-python-client
+regex
+yt-dlp
+fastapi
+uvicorn
+pydantic
+python-multipart

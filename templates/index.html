@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatBot UI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <header>
+            <h1>AI Chatbot</h1>
+            <div class="options">
+                <button id="summarize" class="option-btn" onclick="setAction('summarize')">Summarize</button>
+                <button id="qna" class="option-btn" onclick="setAction('qna')">Make Q&A</button>
+                <button id="answer" class="option-btn" onclick="setAction('answer')">Make Answer</button>
+            </div>
+        </header>
+
+        <div class="chat-box" id="chat-box"></div>
+
+        <!-- Robot inside chat container -->
+        <img src="/static/robot.gif" alt="Robot" class="robot-inside">
+
+        <div class="chat-input">
+            <textarea id="user-input" placeholder="Type your message..."></textarea>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
