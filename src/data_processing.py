@@ -1,24 +1,56 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import re
 import pytorch_lightning as pl
 import zipfile
 import os
 
 pl.seed_everything(42)
 
+def get_target_text(row):
+    try:
+        if isinstance(row["answers"], list) and 0 <= row["correct_answer_id"] < len(row["answers"]):
+            return row["answers"][row["correct_answer_id"]]
+    except:
+        pass
+    return None
+def fix_answer_string(answer_str):
+    if not isinstance(answer_str, str):
+        return []
+    cleaned = re.sub(r"'\s+'", "', '", answer_str)
+    try:
+        return eval(cleaned)
+    except:
+        return []
+def reformat_df_cleaned1(df_cleaned):
+    df_reformatted = df_cleaned.copy()
+    df_reformatted['parsed_answer'] = df_reformatted['answers'].apply(
+        lambda x: x if isinstance(x, str) else "not enough information"
+    )
+    df_reformatted['prompt'] = (
+        "### Context:\n" + df_reformatted['context'] + "\n\n" +
+        "### Question:\n" + df_reformatted['question'] + "\n\n" +
+        "### Instruction:\nProvide the answer to the question based on the context.\n\n" +
+        "### Answer:\n" + df_reformatted['parsed_answer']
+    )
+    df_reformatted = df_reformatted.drop(columns=['parsed_answer'])
+    return df_reformatted
+
 # QA Preprocessing
 df = pd.read_csv("data//raw//train.csv")
 df_cleaned = df[["context", "question", "answers", "correct_answer_id"]]
+
 df_cleaned = df_cleaned[df_cleaned['question'].str.endswith('?', na=False)]
 df_cleaned = df_cleaned.reset_index(drop=True)
+df_cleaned["answers"] = df_cleaned["answers"].apply(fix_answer_string)
+df_cleaned["answers"] = df_cleaned.apply(get_target_text, axis=1)
 
-df_task2 = df_cleaned.copy()
-df_task2["input_text"] = (
-    "answer question: " + df_cleaned["question"] + " context: " + df_cleaned["context"]
-)
-df_task2["target_text"] = df_cleaned.apply(
-    lambda row: row["answers"][row["correct_answer_id"]], axis=1
-)
+train_df, val_df = train_test_split(df_cleaned, test_size=0.2, random_state=42)
+train_df_qa_answer = reformat_df_cleaned1(train_df)
+val_df_qa_answer = reformat_df_cleaned1(val_df)
+
+train_df_qa_answer.to_csv("data//processed//train_qa_answer.csv", index=False)
+val_df_qa_answer.to_csv("data//processed//val_qa_answer.csv", index=False)
 
 def reformat_df_cleaned(df_cleaned, task):
     """Reformat QA data for specified task (qa_generation or qa_answering)."""
@@ -50,14 +82,9 @@ def reformat_df_cleaned(df_cleaned, task):
 train_df, val_df = train_test_split(df_cleaned, test_size=0.2, random_state=42)
 train_df_qa_gen = reformat_df_cleaned(train_df, task="qa_generation")
 val_df_qa_gen = reformat_df_cleaned(val_df, task="qa_generation")
-train_df_qa_answer = reformat_df_cleaned(train_df, task="qa_answering")
-val_df_qa_answer = reformat_df_cleaned(val_df, task="qa_answering")
 
 train_df_qa_gen.to_csv("data//processed//train_qa_gen.csv", index=False)
 val_df_qa_gen.to_csv("data//processed//val_qa_gen.csv", index=False)
-train_df_qa_answer.to_csv("data//processed//train_qa_answer.csv", index=False)
-val_df_qa_answer.to_csv("data//processed//val_qa_answer.csv", index=False)
-df_task2.to_csv("data//processed//task2.csv", index=False)
 
 # Summarization Preprocessing
 zip_path = "data//raw//news_summary.zip" 
