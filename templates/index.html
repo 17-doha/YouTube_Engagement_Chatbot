@@ -16,14 +16,23 @@
             </div>
         </header>
 
-        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-box" id="chat-box">
+            {% if output %}
+                <div id="output" class="chat-message bot">{{ output }}</div>
+            {% endif %}
+        </div>
 
-        <!-- Robot inside chat container -->
         <img src="/static/robot.gif" alt="Robot" class="robot-inside">
 
-        <div class="chat-input">
+        <div class="chat-input" id="main-input">
             <textarea id="user-input" placeholder="Type your message..."></textarea>
             <button onclick="sendMessage()">Send</button>
+        </div>
+
+        <!-- New question input area, hidden by default -->
+        <div class="chat-input question-input" id="question-input" style="display: none;">
+            <textarea id="question-text" placeholder="Enter your question..."></textarea>
+            <button onclick="sendQuestion()">Submit Question</button>
         </div>
     </div>
 

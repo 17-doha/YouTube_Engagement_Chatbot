@@ -6,7 +6,7 @@ import re
 app = FastAPI()
 
 vllm_model_id = "data-lora"
-ngrok_url = "https://137b-34-16-198-36.ngrok-free.app"  
+ngrok_url = "https://b458-34-90-55-87.ngrok-free.app"  
 
 # Request schema
 class PromptRequest(BaseModel):
@@ -25,6 +25,7 @@ def generate_text(request: PromptRequest):
         if response.status_code != 200:
             raise HTTPException(status_code=response.status_code, detail=response.text)
         result = response.json()
+        print(result)
         full_text = result.get("text", "").strip()
         match = re.search(r"(?:\n|^)Answer(?: based on context)?:\s*(.*)", full_text)
         if match:

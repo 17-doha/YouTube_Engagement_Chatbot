@@ -143,6 +143,41 @@ header {
     animation: float 2s ease-in-out infinite;
 }
 
+/* Add to existing style.css */
+
+/* Question input area */
+.question-input {
+    display: none; /* Hidden by default */
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    gap: 10px;
+}
+
+.question-input textarea {
+    flex: 1;
+    border-radius: 8px;
+    resize: none;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    height: 60px;
+}
+
+.question-input button {
+    background-color: #4c51bf;
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.question-input button:hover {
+    background-color: #5a67d8;
+}
+
 /* Floating animation */
 @keyframes float {
     0%, 100% { transform: translateY(0); }
