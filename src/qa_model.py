@@ -1,10 +1,11 @@
+from typing import Dict
 from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForLanguageModeling
 import torch
 from transformers  import BitsAndBytesConfig
 import pandas as pd
 from peft import LoraConfig, get_peft_model
-
+import torch
 from torch.utils.data import DataLoader
 from huggingface_hub import login
 import torch.nn as nn
@@ -13,7 +14,22 @@ from src.train_qa import train_model
 batch_size = 4
 
 
-def tokenize_function(examples):
+def tokenize_function(examples: Dict[str, list]) -> Dict[str, torch.Tensor]:
+    """Tokenize input prompts for a transformer model.
+
+    This function processes a batch of input examples by tokenizing the 'prompt' field
+    using a pre-defined tokenizer. It applies padding and truncation to ensure consistent
+    sequence lengths, suitable for training or inference with transformer models.
+
+    Args:
+        examples (Dict[str, list]): A dictionary containing a list of prompts under the
+            key 'prompt'. Each prompt is a string to be tokenized.
+
+    Returns:
+        Dict[str, torch.Tensor]: A dictionary containing tokenized outputs, including
+            'input_ids' and 'attention_mask' as PyTorch tensors.
+
+    """
     return tokenizer(
         examples["prompt"],
         padding="max_length",
