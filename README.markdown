@@ -6,13 +6,6 @@ The YouTube Engagement Chatbot is a user-friendly application designed to enhanc
 
 ## Setup Instructions
 
-### Prerequisites
-
-- Python 3.8 or higher
-- Node.js 14.x or higher (for the frontend)
-- Git
-- A YouTube Data API key (optional, for advanced features)
-
 ### Installation
 
 1. **Clone the Repository**
